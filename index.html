@@ -1,0 +1,677 @@
+<!--
+  PÁGINA: Bolsones de Frutas y Verduras
+  Requerimientos cubiertos:
+  - Diseño minimalista, moderno y mobile-first
+  - Sección de productos (2-3 bolsones) con imagen/ícono, descripción y precio
+  - Formulario: nombre, ubicación, bolsón, forma de pago
+  - Botón "Confirmar pedido" que abre WhatsApp con mensaje prellenado
+  - Todo en un único archivo (HTML + CSS + JS) y bien comentado
+  - Sin frameworks; solo HTML, CSS y JavaScript puro
+  - Íconos simples embebidos (SVG) para un look más profesional
+  👉 Reemplaza el número de WhatsApp en la constante PHONE con tu número real (formato internacional).
+-->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- ===== META BÁSICA ===== -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Bolsones Frescos | Frutas & Verduras</title>
+  <meta name="description" content="Promoción y pedidos de bolsones de frutas y verduras frescas. Simple, rápido y por WhatsApp." />
+  <meta name="theme-color" content="#0f172a" />
+
+  <!-- ====== CSS (ESTILOS) ======
+       - Mobile First
+       - Diseño limpio y profesional
+       - Variables de color para fácil personalización
+  -->
+  <style>
+    :root{
+      --bg: #0f172a;          /* Slate-900 */
+      --card: #111827;        /* Gray-900 */
+      --muted: #94a3b8;       /* Slate-400 */
+      --text: #e5e7eb;        /* Gray-200 */
+      --accent: #22c55e;      /* Green-500 */
+      --accent-2: #14b8a6;    /* Teal-500 */
+      --warn: #ef4444;        /* Red-500 */
+      --ring: #334155;        /* Slate-700 */
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --radius: 16px;
+    }
+
+    /* Reset y tipografía base */
+    *{ box-sizing: border-box; }
+    html, body{ height: 100%; }
+    body{
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background:
+        radial-gradient(1000px 600px at 10% -10%, rgba(20,184,166,.15), transparent 60%),
+        radial-gradient(900px 600px at 90% -20%, rgba(34,197,94,.12), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* Contenedor general */
+    .wrap{
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 20px 0 80px;
+    }
+
+    /* ====== HEADER / HERO ====== */
+    header{
+      padding: env(safe-area-inset-top) 0 12px;
+    }
+    .brand{
+      display: flex; align-items: center; gap: 12px;
+    }
+    .brand svg{ width: 36px; height: 36px; }
+    .title{
+      font-size: clamp(1.4rem, 3.8vw, 2rem);
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+    .subtitle{
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: .98rem;
+    }
+
+    /* ====== TARJETAS DE PRODUCTO ====== */
+    .products{
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 740px){
+      .products{ grid-template-columns: repeat(3, 1fr); }
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0));
+      border: 1px solid var(--ring);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 12px;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .card:hover{ transform: translateY(-2px); border-color: rgba(255,255,255,.18); }
+    .card-head{
+      display: flex; align-items: center; gap: 10px;
+    }
+    .badge{
+      font-size: .75rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--ring);
+      color: var(--muted);
+    }
+    .price{
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .pill-icons{
+      display: flex; gap: 6px; flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .card-actions{
+      display: flex; gap: 8px; align-items: center; justify-content: space-between;
+      margin-top: 4px;
+    }
+    .btn{
+      appearance: none; border: none; cursor: pointer;
+      padding: 10px 14px; border-radius: 12px; font-weight: 600;
+      background: var(--accent); color: #0a0f1f;
+      transition: filter .2s ease, transform .06s ease;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.secondary{ background: transparent; color: var(--text); border: 1px solid var(--ring); }
+    .mini{
+      font-size: .9rem; padding: 8px 12px; border-radius: 10px;
+    }
+    .illus{
+      width: 42px; height: 42px; border-radius: 10px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, rgba(34,197,94,.25), rgba(20,184,166,.25));
+      border: 1px solid var(--ring);
+    }
+
+    /* ====== FORMULARIO ====== */
+    .form-wrap{
+      margin-top: 30px;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.0));
+      border: 1px solid var(--ring);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .form-title{
+      font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+      margin: 0 0 14px;
+    }
+    .grid{
+      display: grid; gap: 12px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 740px){
+      .grid-2{ grid-template-columns: 1fr 1fr; }
+      .grid-3{ grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    .field{
+      display: grid; gap: 6px;
+    }
+    label{
+      font-size: .9rem; color: var(--muted);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .control{
+      background: #0b1224;
+      border: 1px solid var(--ring);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 12px 12px 12px 44px; /* espacio para icono */
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+      width: 100%;
+      font-size: 1rem;
+    }
+    .control:focus{
+      border-color: rgba(34,197,94,.6);
+      box-shadow: 0 0 0 3px rgba(34,197,94,.15);
+    }
+    .field-icon{
+      position: relative;
+    }
+    .field-icon svg{
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      width: 20px; height: 20px;
+      opacity: .85;
+    }
+    select.control{ padding-right: 40px; }
+    textarea.control{ min-height: 92px; resize: vertical; }
+
+    .help{
+      font-size: .8rem; color: var(--muted);
+    }
+    .error{
+      font-size: .82rem; color: var(--warn); margin-top: 4px; display: none;
+    }
+    .invalid .error{ display: block; }
+    .invalid .control{ border-color: rgba(239,68,68,.9); }
+
+    .actions{
+      display: grid; gap: 10px; margin-top: 10px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 560px){
+      .actions{ grid-template-columns: 1fr auto; align-items: center; }
+    }
+    .whatsapp{
+      background: linear-gradient(90deg, #22c55e, #14b8a6);
+      color: #051018;
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 12px 16px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    .whatsapp svg{ width: 20px; height: 20px; }
+
+    /* ====== FOOTER ====== */
+    footer{
+      margin-top: 26px; color: var(--muted); font-size: .86rem;
+      display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    }
+    .tiny{
+      font-size: .78rem; color: var(--muted);
+    }
+
+    /* ====== UTILIDADES ====== */
+    .sr-only{
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+    .divider{
+      height: 1px; background: var(--ring); margin: 18px 0;
+      border-radius: 999px;
+    }
+
+    /* ====== TOAST SIMPLE ====== */
+    .toast{
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      background: rgba(2,6,23,.96);
+      border: 1px solid var(--ring);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      font-size: .92rem;
+      display: none;
+      z-index: 20;
+    }
+    .toast.show{ display: block; animation: fade .25s ease; }
+    @keyframes fade{ from{ opacity: 0; transform: translateX(-50%) translateY(6px);} }
+
+  </style>
+</head>
+<body>
+
+  <!-- ====== HEADER / HERO ====== -->
+  <header>
+    <div class="wrap">
+      <div class="brand" aria-label="Marca">
+        <!-- Ícono de marca (fruta/verdura) -->
+        <div class="illus" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path stroke-width="1.5" d="M8 3s.8 2 4 2 4-2 4-2" />
+            <path stroke-width="1.5" d="M12 6c-4 0-7 3-7 7a7 7 0 1 0 14 0c0-4-3-7-7-7Z" />
+            <path stroke-width="1.5" d="M9 11c.8 1 2 1 3 .5M6 15c1.2.8 2.7 1.1 4.2.9" />
+          </svg>
+        </div>
+        <!-- Título del emprendimiento: cámbialo por el nombre real -->
+        <div>
+          <div class="title">Bolsones Frescos</div>
+          <div class="subtitle">Frutas y verduras seleccionadas, directo a tu mesa.</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- ====== SECCIÓN PRODUCTOS ====== -->
+    <section aria-labelledby="packs">
+      <h2 id="packs" class="sr-only">Bolsones disponibles</h2>
+      <div class="products">
+        <!-- Card 1 -->
+        <article class="card" data-pack-id="clasico" data-pack-nombre="Bolsón Clásico" data-pack-precio="7990">
+          <div class="card-head">
+            <div class="illus" aria-hidden="true">🍎</div>
+            <div>
+              <div style="font-weight:700">Bolsón Clásico</div>
+              <div class="badge">Ideal para 1-2 personas</div>
+            </div>
+          </div>
+          <p class="tiny">
+            Mezcla balanceada de frutas y verduras esenciales para tu semana.
+          </p>
+          <div class="pill-icons">
+            <span>• 1 kg manzana</span>
+            <span>• 1 kg papa</span>
+            <span>• 1/2 kg zanahoria</span>
+            <span>• 1 lechuga</span>
+          </div>
+          <div class="card-actions">
+            <span class="price">$ 7.990</span>
+            <button class="btn mini js-elegir">Elegir</button>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="card" data-pack-id="familiar" data-pack-nombre="Bolsón Familiar" data-pack-precio="12990">
+          <div class="card-head">
+            <div class="illus" aria-hidden="true">🥦</div>
+            <div>
+              <div style="font-weight:700">Bolsón Familiar</div>
+              <div class="badge">Rinde 3-4 personas</div>
+            </div>
+          </div>
+          <p class="tiny">
+            Más cantidad y variedad para toda la familia a un precio conveniente.
+          </p>
+          <div class="pill-icons">
+            <span>• 2 kg papa</span>
+            <span>• 1 kg cebolla</span>
+            <span>• 1 kg banana</span>
+            <span>• 1 zapallo cabutia</span>
+          </div>
+          <div class="card-actions">
+            <span class="price">$ 12.990</span>
+            <button class="btn mini js-elegir">Elegir</button>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="card" data-pack-id="fit" data-pack-nombre="Bolsón Fit" data-pack-precio="9990">
+          <div class="card-head">
+            <div class="illus" aria-hidden="true">🥬</div>
+            <div>
+              <div style="font-weight:700">Bolsón Fit</div>
+              <div class="badge">Verde y liviano</div>
+            </div>
+          </div>
+          <p class="tiny">
+            Enfoque en hojas y frutas frescas para comidas ligeras y jugos.
+          </p>
+          <div class="pill-icons">
+            <span>• Espinaca</span>
+            <span>• Acelga</span>
+            <span>• Pepino</span>
+            <span>• Naranja</span>
+          </div>
+          <div class="card-actions">
+            <span class="price">$ 9.990</span>
+            <button class="btn mini js-elegir">Elegir</button>
+          </div>
+        </article>
+      </div>
+      <p class="tiny" style="margin-top:10px">* Composición e imágenes ilustrativas; puede variar según disponibilidad.</p>
+    </section>
+
+    <div class="divider" role="separator" aria-hidden="true"></div>
+
+    <!-- ====== FORMULARIO DE PEDIDO ====== -->
+    <section class="form-wrap" aria-labelledby="formulario">
+      <h2 id="formulario" class="form-title">Hacé tu pedido</h2>
+
+      <form id="orderForm" novalidate>
+        <div class="grid grid-2">
+          <!-- Nombre -->
+          <div class="field" id="f-nombre">
+            <label for="nombre">
+              <!-- icono persona -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" width="18" height="18">
+                <circle cx="12" cy="8" r="4" stroke-width="1.5"></circle>
+                <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke-width="1.5"></path>
+              </svg>
+              Nombre y apellido
+            </label>
+            <div class="field-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <circle cx="12" cy="8" r="4" stroke-width="1.5"></circle>
+                <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke-width="1.5"></path>
+              </svg>
+              <input class="control" id="nombre" name="nombre" type="text" placeholder="Ej: Ana Pérez" autocomplete="name" required />
+            </div>
+            <div class="error">Ingresá tu nombre.</div>
+          </div>
+
+          <!-- Ubicación -->
+          <div class="field" id="f-ubicacion">
+            <label for="ubicacion">
+              <!-- icono ubicación -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" width="18" height="18">
+                <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" stroke-width="1.5"></path>
+                <circle cx="12" cy="10" r="2.5" stroke-width="1.5"></circle>
+              </svg>
+              Ubicación / Dirección
+            </label>
+            <div class="field-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" stroke-width="1.5"></path>
+                <circle cx="12" cy="10" r="2.5" stroke-width="1.5"></circle>
+              </svg>
+              <input class="control" id="ubicacion" name="ubicacion" type="text" placeholder="Ej: Quilmes, Av. Mitre 1234" autocomplete="street-address" required />
+            </div>
+            <div class="error">Ingresá tu ubicación.</div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" style="margin-top:6px">
+          <!-- Selección de bolsón -->
+          <div class="field" id="f-bolson">
+            <label for="bolson">
+              <!-- icono bolsa -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" width="18" height="18">
+                <path d="M6 9V7a6 6 0 0 1 12 0v2" stroke-width="1.5"></path>
+                <rect x="4" y="9" width="16" height="12" rx="2" stroke-width="1.5"></rect>
+              </svg>
+              Elegí tu bolsón
+            </label>
+            <div class="field-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M6 9V7a6 6 0 0 1 12 0v2" stroke-width="1.5"></path>
+                <rect x="4" y="9" width="16" height="12" rx="2" stroke-width="1.5"></rect>
+              </svg>
+              <select class="control" id="bolson" name="bolson" required>
+                <option value="" disabled selected>Seleccionar</option>
+                <option value="clasico" data-precio="7990">Bolsón Clásico — $ 7.990</option>
+                <option value="familiar" data-precio="12990">Bolsón Familiar — $ 12.990</option>
+                <option value="fit" data-precio="9990">Bolsón Fit — $ 9.990</option>
+              </select>
+            </div>
+            <div class="error">Seleccioná un bolsón.</div>
+          </div>
+
+          <!-- Forma de pago -->
+          <div class="field" id="f-pago">
+            <label for="pago">
+              <!-- icono tarjeta/efectivo -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" width="18" height="18">
+                <rect x="3" y="5" width="18" height="14" rx="2" stroke-width="1.5"></rect>
+                <path d="M3 9h18" stroke-width="1.5"></path>
+              </svg>
+              Forma de pago
+            </label>
+            <div class="field-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="2" stroke-width="1.5"></rect>
+                <path d="M3 9h18" stroke-width="1.5"></path>
+              </svg>
+              <select class="control" id="pago" name="pago" required>
+                <option value="" disabled selected>Seleccionar</option>
+                <option>Efectivo</option>
+                <option>Transferencia</option>
+                <option>Mercado Pago</option>
+              </select>
+            </div>
+            <div class="error">Elegí una forma de pago.</div>
+          </div>
+
+          <!-- Comentarios -->
+          <div class="field">
+            <label for="comentarios">
+              <!-- icono lápiz -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" width="18" height="18">
+                <path d="M15 5l4 4M7 13l8-8 4 4-8 8H7v-4Z" stroke-width="1.5"></path>
+                <path d="M5 21h14" stroke-width="1.5"></path>
+              </svg>
+              Comentarios (opcional)
+            </label>
+            <div class="field-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M15 5l4 4M7 13l8-8 4 4-8 8H7v-4Z" stroke-width="1.5"></path>
+                <path d="M5 21h14" stroke-width="1.5"></path>
+              </svg>
+              <textarea class="control" id="comentarios" name="comentarios" placeholder="Indicanos horario preferido, reemplazos, etc."></textarea>
+            </div>
+            <div class="help">Ej: Entrega por la tarde, reemplazar papa por batata, etc.</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <!-- Resumen dinámico de selección -->
+          <div id="resumen" class="tiny">
+            <strong>Resumen:</strong> Seleccioná un bolsón para ver el total.
+          </div>
+
+          <!-- Botón principal WhatsApp -->
+          <button id="confirmar" class="whatsapp" type="submit" aria-label="Confirmar pedido por WhatsApp">
+            <!-- Logo WhatsApp (SVG simple) -->
+            <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+              <path d="M19.1 17.2c-.2-.1-1.3-.6-1.5-.7s-.4-.1-.6.1-.7.7-.8.9c-.1.2-.3.2-.5.1-.2-.1-.9-.3-1.7-1a7 7 0 0 1-1.3-1.6c-.2-.2 0-.4.1-.5l.3-.3c.1-.1.1-.2.2-.3.1-.1.1-.2.2-.3s0-.2 0-.3 0-.2 0-.3 0-.3-.1-.4c-.1-.1-.6-1.5-.8-2s-.4-.4-.6-.4h-.5a.9.9 0 0 0-.7.3c-.2.2-.9.9-.9 2.2s.9 2.5 1 2.7 1.8 2.7 4.3 3.8c.6.3 1 .4 1.4.6.6.2 1.1.2 1.5.2.5 0 1.3-.3 1.5-.8.2-.5.2-1 .1-1.1-.1-.1-.2-.1-.4-.2Z"></path>
+              <path d="M27.5 4.5a14 14 0 0 0-22.7 15l-1.7 6.2 6.3-1.7a14 14 0 0 0 6.8 1.8h.1A14 14 0 0 0 27.5 4.5Zm-1.9 18.7A11.2 11.2 0 0 1 16.2 27h-.1c-1.9 0-3.8-.5-5.5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4a11.3 11.3 0 1 1 18.4 1.8Z"></path>
+            </svg>
+            Confirmar pedido
+          </button>
+        </div>
+
+        <!-- Aria-live para errores generales -->
+        <div id="formStatus" class="sr-only" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <footer>
+      <span class="tiny">© <span id="anio"></span> Bolsones Frescos — Cambiá el nombre por tu emprendimiento.</span>
+      <span class="tiny">Hecho con ♥ en Argentina</span>
+    </footer>
+  </main>
+
+  <!-- ====== TOAST SIMPLE ====== -->
+  <div id="toast" class="toast" role="status" aria-live="polite">Completá los campos requeridos.</div>
+
+  <!-- ====== JAVASCRIPT (INTERACCIÓN) ======
+       - Mapea clic en “Elegir” de cada tarjeta → preselecciona el bolsón en el formulario
+       - Actualiza el resumen con el total
+       - Valida campos requeridos
+       - Arma el mensaje y abre WhatsApp con texto prellenado
+  -->
+  <script>
+    // === CONFIGURACIÓN: reemplazá con tu número real ===
+    // ACEPTA: "+54XXXXXXXXXX" (con +) o solo dígitos. El script se encarga de limpiarlo para wa.me.
+    const PHONE = "+543515208891";
+
+    // === UTILIDADES ===
+    const $ = (sel, ctx = document) => ctx.querySelector(sel);
+    const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+
+    const formatCurrency = (n) =>
+      new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n);
+
+    const digitsOnly = (str) => (str || '').replace(/\D+/g, '');
+
+    const showToast = (msg) => {
+      const el = $("#toast");
+      el.textContent = msg || "Acción realizada.";
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2400);
+    };
+
+    // === DOM ELEMENTOS ===
+    const form = $("#orderForm");
+    const nombre = $("#nombre");
+    const ubicacion = $("#ubicacion");
+    const bolson = $("#bolson");
+    const pago = $("#pago");
+    const comentarios = $("#comentarios");
+    const resumen = $("#resumen");
+    const confirmar = $("#confirmar");
+    const formStatus = $("#formStatus");
+
+    // Año en footer
+    $("#anio").textContent = new Date().getFullYear();
+
+    // Preseleccionar bolsón al hacer clic en “Elegir”
+    $$(".js-elegir").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const card = e.currentTarget.closest(".card");
+        const id = card?.dataset.packId;
+        if (!id) return;
+
+        // Selecciona el option que coincida con el data-pack-id
+        const opt = Array.from(bolson.options).find(o => o.value === id);
+        if (opt) {
+          bolson.value = opt.value;
+          bolson.dispatchEvent(new Event('change'));
+          // Scroll hacia el formulario para continuar
+          form.scrollIntoView({ behavior: "smooth", block: "start" });
+          nombre.focus({ preventScroll: true });
+        }
+      });
+    });
+
+    // Actualizar resumen al cambiar selección
+    const updateResumen = () => {
+      const opt = bolson.selectedOptions?.[0];
+      if (!opt || !opt.value) {
+        resumen.innerHTML = `<strong>Resumen:</strong> Seleccioná un bolsón para ver el total.`;
+        return;
+      }
+      const label = opt.textContent || "Bolsón";
+      const precio = Number(opt.dataset.precio || 0);
+      resumen.innerHTML = `<strong>Resumen:</strong> ${label} → Total: <strong>${formatCurrency(precio)}</strong>`;
+    };
+    bolson.addEventListener("change", updateResumen);
+
+    // Validación simple
+    const requiredFields = [
+      { el: nombre, wrap: "#f-nombre", msg: "Ingresá tu nombre." },
+      { el: ubicacion, wrap: "#f-ubicacion", msg: "Ingresá tu ubicación." },
+      { el: bolson, wrap: "#f-bolson", msg: "Seleccioná un bolsón." },
+      { el: pago, wrap: "#f-pago", msg: "Elegí una forma de pago." },
+    ];
+
+    const clearInvalid = () => {
+      requiredFields.forEach(({ wrap }) => $(wrap)?.classList.remove("invalid"));
+      formStatus.textContent = "";
+    };
+
+    const validate = () => {
+      clearInvalid();
+      let valid = true;
+      requiredFields.forEach(({ el, wrap, msg }) => {
+        const value = (el.value || "").trim();
+        const isEmpty = !value || value === "";
+        if (isEmpty) {
+          $(wrap)?.classList.add("invalid");
+          $(wrap + " .error").textContent = msg;
+          valid = false;
+        }
+      });
+      if (!valid) {
+        showToast("Completá los campos requeridos.");
+        formStatus.textContent = "Hay campos obligatorios sin completar.";
+      }
+      return valid;
+    };
+
+    // Armar mensaje de WhatsApp
+    const buildWhatsAppMessage = () => {
+      const opt = bolson.selectedOptions?.[0];
+      const precio = Number(opt?.dataset?.precio || 0);
+      const nombrePack = opt ? opt.textContent.split(" — ")[0] : "No especificado";
+
+      const lines = [
+        "¡Hola! Quiero hacer un pedido 🙌",
+        `• Nombre: ${nombre.value.trim()}`,
+        `• Ubicación: ${ubicacion.value.trim()}`,
+        `• Bolsón: ${nombrePack}`,
+        `• Forma de pago: ${pago.value}`,
+      ];
+
+      if (precio) lines.push(`• Total: ${formatCurrency(precio)}`);
+      if (comentarios.value.trim()) lines.push(`• Comentarios: ${comentarios.value.trim()}`);
+
+      return lines.join("\n");
+    };
+
+    // Envío / Apertura de WhatsApp
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!validate()) return;
+
+      const phoneDigits = digitsOnly(PHONE);
+      if (!phoneDigits) {
+        showToast("Configurá tu número de WhatsApp en el código (const PHONE).");
+        return;
+      }
+
+      const text = buildWhatsAppMessage();
+      const url = `https://wa.me/${phoneDigits}?text=${encodeURIComponent(text)}`;
+
+      // Intentar abrir en nueva pestaña
+      const win = window.open(url, "_blank", "noopener,noreferrer");
+      if (!win) {
+        // Si el navegador bloquea el popup, degradar a navegación actual
+        location.href = url;
+      }
+    });
+
+    // Limpia errores al tipear/cambiar
+    [...requiredFields.map(r => r.el), comentarios].forEach(el => {
+      el.addEventListener("input", clearInvalid);
+      el.addEventListener("change", clearInvalid);
+    });
+
+    // Estado inicial
+    updateResumen();
+  </script>
+</body>
+</html>

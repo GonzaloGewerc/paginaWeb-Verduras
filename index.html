@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Bolsones Frescos | Frutas & Verduras</title>
+  <link rel="stylesheet" href="verduras.css">
+</head>
+
+<body>
+  <!-- // NEW: enlace de salto para accesibilidad -->
+  <a class="skip-link" href="#contenido">Saltar al contenido</a> <!-- // NEW -->
+
+  <header class="header">
+    <div class="wrap header-bar">
+      <div class="brand">
+        <div class="logo-illus" aria-hidden="true">🍊</div>
+        <div class="brand-texts">
+          <h1 class="title">Bolsones Frescos</h1>
+          <p class="subtitle">Frutas y verduras seleccionadas, directo a tu mesa.</p>
+        </div>
+      </div>
+
+      <nav class="nav-desktop" aria-label="Menú principal">
+        <ul class="nav-list">
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#productos">Productos</a></li>
+          <li><a href="#pedido">Hacer tu pedido</a></li>
+          <li><a href="#sobre">Sobre nosotros</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <!-- El botón hamburguesa se posiciona por CSS (esquina sup. izquierda en mobile) -->
+      <button id="menuButton" class="hamburger" aria-label="Abrir menú"
+              aria-controls="mobileNav" aria-expanded="false">
+        <span class="hamburger-box" aria-hidden="true">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Drawer móvil + overlay -->
+  <div id="backdrop" class="backdrop" hidden></div>
+  <nav id="mobileNav" class="drawer" role="dialog" aria-modal="true"
+       aria-label="Menú principal" hidden>
+    <div class="drawer-header">
+      <h2 class="drawer-title">Menú</h2>
+      <button id="closeDrawer" class="close" aria-label="Cerrar menú">✕</button>
+    </div>
+    <ul class="drawer-list">
+      <li><a data-nav-link href="#inicio">Inicio</a></li>
+      <li><a data-nav-link href="#productos">Productos</a></li>
+      <li><a data-nav-link href="#pedido">Hacer tu pedido</a></li>
+      <li><a data-nav-link href="#sobre">Sobre nosotros</a></li>
+      <li><a data-nav-link href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <main id="contenido" class="wrap">
+    <section id="inicio" class="sr-only" aria-label="Inicio"></section>
+
+    <!-- Sección Productos -->
+    <!-- APLICADO: mismo fondo y border-radius que el form (.form-wrap) -->
+    <section id="productos" aria-labelledby="packs">
+      <h2 id="packs" class="sr-only">Bolsones disponibles</h2>
+
+      <div class="carousel" data-page-size="4">
+        <button class="carousel-btn prev" type="button" aria-label="Productos anteriores">‹</button>
+        <!-- tabindex para focus tras cambio de página -->
+        <div id="productsGrid" class="products" aria-live="polite" aria-busy="false" tabindex="-1"></div>
+        <button class="carousel-btn next" type="button" aria-label="Productos siguientes">›</button>
+      </div>
+
+      <p class="tiny note">* Composición e imágenes ilustrativas; puede variar según disponibilidad.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Formulario -->
+    <section id="pedido" class="form-wrap" aria-labelledby="formulario">
+      <h2 id="formulario" class="form-title">Hacé tu pedido</h2>
+
+      <form id="orderForm" novalidate>
+        <div class="grid grid-2">
+          <div class="field" id="f-nombre">
+            <label for="nombre">Nombre y apellido</label>
+            <input class="control" id="nombre" name="nombre" type="text" placeholder="Ej: Ana Pérez" autocomplete="name" required>
+            <div class="error">Ingresá tu nombre.</div>
+          </div>
+
+          <div class="field" id="f-ubicacion">
+            <label for="ubicacion">Ubicación / Dirección</label>
+            <div class="input-with-btn">
+              <input class="control" id="ubicacion" name="ubicacion" type="text"
+                     placeholder="Ej: Quilmes, Av. Mitre 1234" autocomplete="street-address">
+              <button type="button" id="btnGeo" class="btn mini" aria-describedby="geoHelp">Usar mi ubicación</button>
+            </div>
+            <div id="geoHelp" class="help">Podés usar tu ubicación o escribir una dirección.</div>
+            <div class="error">Ingresá tu ubicación o compartí tu ubicación actual.</div>
+          </div>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="field" id="f-bolson">
+            <label for="bolson">Elegí tu bolsón (uno o varios)</label>
+            <!-- APLICADO: selección múltiple -->
+            <select class="control" id="bolson" name="bolson" multiple size="4" required aria-describedby="bolsonHelp">
+              <!-- Se completa desde JS -->
+            </select>
+            <div id="bolsonHelp" class="help">Mantené presionado Ctrl/Cmd para elegir más de uno (en celular, tocá varias opciones).</div>
+            <div class="error">Seleccioná al menos un bolsón.</div>
+          </div>
+
+          <div class="field" id="f-pago">
+            <label for="pago">Forma de pago</label>
+            <select class="control" id="pago" name="pago" required>
+              <option value="" disabled selected>Seleccionar</option>
+              <option>Efectivo</option>
+              <option>Transferencia</option>
+              <option>Mercado Pago</option>
+            </select>
+            <div class="error">Elegí una forma de pago.</div>
+          </div>
+
+          <div class="field">
+            <label for="comentarios">Comentarios (opcional)</label>
+            <textarea class="control" id="comentarios" name="comentarios" placeholder="Ej: Entrega por la tarde, reemplazar papa por batata..."></textarea>
+            <div class="help">Podés contarnos detalles del pedido.</div>
+          </div>
+        </div>
+
+        <div class="map-wrap" id="mapPreview" hidden>
+          <iframe id="mapFrame" title="Ubicación en Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <p id="mapsLinkWrap" class="tiny" hidden>
+          <a id="mapsLink" target="_blank" rel="noopener">Ver en Google Maps</a>
+        </p>
+
+        <input type="hidden" id="lat" name="lat">
+        <input type="hidden" id="lng" name="lng">
+
+        <div class="actions">
+          <div id="resumen" class="tiny">
+            <strong>Resumen:</strong> Seleccioná uno o varios bolsones para ver el total.
+          </div>
+
+          <div class="actions-right">
+            <button id="confirmar" class="whatsapp" type="submit" aria-label="Confirmar pedido por WhatsApp">
+              Confirmar pedido
+            </button>
+            <button id="enviarEmail" class="btn mini alt" type="button" aria-label="Enviar pedido por email">Enviar por email</button>
+          </div>
+        </div>
+
+        <div id="formStatus" class="sr-only" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <section id="sobre" class="about" aria-labelledby="sobre-title">
+      <h2 id="sobre-title">Sobre nosotros</h2>
+      <div class="about-grid">
+        <figure>
+          <img loading="lazy" src="ro y yo1.jpg" alt="Selección de frutas frescas" data-ph="Frutas"/>
+          <figcaption>Amamos lo fresco y simple.</figcaption>
+        </figure>
+        <figure>
+          <img loading="lazy" src="pipo y yo.jpg" alt="Bolsones listos para entregar" data-ph="Bolsones"/>
+          <figcaption>Armamos cada bolsón con dedicación.</figcaption>
+        </figure>
+        <figure>
+          <img loading="lazy" src="44f87bec-7d11-4a52-9340-972139589e6f.jpg" alt="Huerta local" data-ph="Huerta"/>
+          <figcaption>Trabajamos con productores locales.</figcaption>
+        </figure>
+      </div>
+      <p class="tiny note">
+        Somos un equipo local comprometido con llevar a tu mesa frutas y verduras de estación,
+        priorizando calidad, precio justo y una experiencia de compra simple.
+      </p>
+    </section>
+
+    <footer id="contacto" class="footer">
+      <div class="footer-left">
+        <span>© <span id="anio"></span> Bolsones Frescos</span>
+        <span>Hecho con ♥ en Argentina</span>
+        <!-- APLICADO: autor + datos -->
+        <div class="footer-credits">
+          Página creada por <strong>Gonzalo Gewerc</strong> — Tel: <a href="https://wa.me/543515208891" target="_blank" rel="noopener">+54 351 520-8891</a> ·
+          Email: <a href="mailto:gongewerc@gmail.com">gongewerc@gmail.com</a> ·
+          Instagram: <a href="https://instagram.com/gon.gewerc" target="_blank" rel="noopener">@gon.gewerc</a>
+        </div>
+      </div>
+      <ul class="footer-links">
+        <li>
+          <a href="https://wa.me/543515208891" target="_blank" rel="noopener" class="footer-link">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.86 11.86 0 0012.07 0C5.44.03.07 5.4.1 12.03a11.93 11.93 0 001.65 6.05L0 24l6.08-1.6a11.97 11.97 0 005.97 1.6h.01c6.63-.03 12-5.41 12-12.04a11.86 11.86 0 00-3.54-8.48zM12.07 22a9.98 9.98 0 01-5.09-1.4l-.36-.21-3.61.95.96-3.52-.23-.37a10.01 10.01 0 1118.33-5.42A10 10 0 0112.07 22zm5.46-7.48c-.3-.15-1.78-.88-2.06-.98-.28-.1-.48-.15-.69.15-.2.3-.79.97-.96 1.17-.18.2-.35.23-.65.08-.3-.15-1.26-.46-2.4-1.47-.89-.79-1.48-1.77-1.65-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.46-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.69-1.66-.94-2.27-.25-.6-.51-.52-.69-.53h-.59c-.2 0-.53.08-.81.38-.28.3-1.06 1.04-1.06 2.53 0 1.5 1.1 2.95 1.26 3.15.15.2 2.16 3.3 5.24 4.62.73.31 1.3.5 1.75.64.73.23 1.39.2 1.92.12.59-.09 1.78-.73 2.03-1.43.25-.7.25-1.3.18-1.43-.06-.13-.25-.2-.55-.35z"/></svg>
+            +54 351 520-8891
+          </a>
+        </li>
+        <li>
+          <a href="mailto:gongewerc@gmail.com" class="footer-link">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 2l-8 5L4 6h16zm0 12H4V8l8 5 8-5v10z"/></svg>
+            gongewerc@gmail.com
+          </a>
+        </li>
+        <li>
+          <a href="https://instagram.com/gon.gewerc" target="_blank" rel="noopener" class="footer-link">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm0 2h10c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3zm11 1.75a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5zM12 7a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6z"/></svg>
+            @gon.gewerc
+          </a>
+        </li>
+      </ul>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">Completá los campos requeridos.</div>
+
+  <script src="verduras.js"></script>
+</body>
+</html>

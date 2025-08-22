@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Bolsones Frescos | Frutas & Verduras</title>
+  <link rel="stylesheet" href="verduras.css?v=8">
+</head>
+
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="header">
+    <div class="wrap header-bar">
+      <div class="brand">
+        <div class="brand-texts">
+          <!-- H1 ELIMINADO -->
+          <p class="subtitle">Frutas y verduras, directo a tu mesa.</p>
+        </div>
+      </div>
+
+      <nav class="nav-desktop" aria-label="Menú principal">
+        <ul class="nav-list">
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#productos">Productos</a></li>
+          <li><a href="#pedido">Hacer tu pedido</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <button id="menuButton" class="hamburger" aria-label="Abrir menú"
+              aria-controls="mobileNav" aria-expanded="false">
+        <span class="hamburger-box" aria-hidden="true">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Drawer móvil + overlay -->
+  <div id="backdrop" class="backdrop" hidden></div>
+  <nav id="mobileNav" class="drawer" role="dialog" aria-modal="true"
+       aria-label="Menú principal" hidden>
+    <div class="drawer-header">
+      <h2 class="drawer-title">Menú</h2>
+      <button id="closeDrawer" class="close" aria-label="Cerrar menú">✕</button>
+    </div>
+    <ul class="drawer-list">
+      <li><a data-nav-link href="#inicio">Inicio</a></li>
+      <li><a data-nav-link href="#productos">Productos</a></li>
+      <li><a data-nav-link href="#pedido">Hacer tu pedido</a></li>
+      <li><a data-nav-link href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <main id="contenido" class="wrap">
+    <section id="inicio" class="sr-only" aria-label="Inicio"></section>
+
+    <!-- HERO solo en mobile -->
+    <section class="hero" aria-label="Presentación">
+      <div class="subtitulo">Frutas y verduras, directo a tu mesa.</div>
+    </section>
+
+    <!-- Sección Productos -->
+    <section id="productos" aria-labelledby="packs">
+      <h2 id="packs" class="section-title">Productos</h2>
+
+      <div class="carousel" data-page-size="4">
+        <button class="carousel-btn prev" type="button" aria-label="Productos anteriores">‹</button>
+        <div id="productsGrid" class="products" aria-live="polite" aria-busy="false" tabindex="-1"></div>
+        <button class="carousel-btn next" type="button" aria-label="Productos siguientes">›</button>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Formulario -->
+    <section id="pedido" class="form-wrap" aria-labelledby="formulario">
+      <h2 id="formulario" class="form-title">Hacé tu pedido</h2>
+
+      <form id="orderForm" novalidate>
+        <div class="grid grid-2">
+          <div class="field" id="f-nombre">
+            <label for="nombre">Nombre y apellido</label>
+            <input class="control" id="nombre" name="nombre" type="text" placeholder="Ej: Ana Pérez" autocomplete="name" required>
+            <div class="error">Ingresá tu nombre.</div>
+          </div>
+
+          <div class="field" id="f-ubicacion">
+            <label for="ubicacion">Ubicación / Dirección</label>
+            <div class="input-with-btn">
+              <input class="control" id="ubicacion" name="ubicacion" type="text"
+                     placeholder="Ej: Quilmes, Av. Mitre 1234" autocomplete="street-address">
+              <button type="button" id="btnGeo" class="btn mini" aria-describedby="geoHelp">Usar mi ubicación</button>
+            </div>
+            <div id="geoHelp" class="help">Podés usar tu ubicación o escribir una dirección.</div>
+            <div class="error">Ingresá tu ubicación o compartí tu ubicación actual.</div>
+          </div>
+        </div>
+
+        <div class="grid grid-3">
+          <!-- Select múltiple (interno/retrocompat) -->
+          <div class="field" id="f-bolson">
+            <label for="bolson">Elegí tus bolsones</label>
+            <div class="input-with-btn">
+              <select class="control" id="bolson" name="bolson" multiple size="4" required></select>
+              <button type="button" id="openPicker" class="btn mini alt" aria-haspopup="dialog" aria-controls="productPicker">
+                Seleccionar productos
+              </button>
+            </div>
+
+            <!-- Detalle dinámico de lo que trae cada bolsón seleccionado -->
+            <div id="selectedDetails" class="selected-details" aria-live="polite"></div>
+
+            <div class="error">Seleccioná al menos un bolsón.</div>
+          </div>
+
+          <div class="field" id="f-pago">
+            <label for="pago">Forma de pago</label>
+            <select class="control" id="pago" name="pago" required>
+              <option value="" disabled selected>Seleccionar</option>
+              <option>Efectivo</option>
+              <option>Transferencia</option>
+              <option>Mercado Pago</option>
+            </select>
+            <div class="error">Elegí una forma de pago.</div>
+          </div>
+
+          <div class="field">
+            <label for="comentarios">Comentarios (opcional)</label>
+            <textarea class="control" id="comentarios" name="comentarios" placeholder="Ej: Entrega por la tarde, referencias, etc."></textarea>
+            <div class="help">Podés contarnos detalles del pedido.</div>
+          </div>
+        </div>
+
+        <div id="mapPreview" class="map-wrap" hidden>
+          <iframe id="mapFrame" title="Ubicación en Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <p id="mapsLinkWrap" class="tiny" hidden>
+          <a id="mapsLink" target="_blank" rel="noopener">Ver en Google Maps</a>
+        </p>
+
+        <input type="hidden" id="lat" name="lat">
+        <input type="hidden" id="lng" name="lng">
+
+        <div class="actions">
+          <div id="resumen" class="tiny">
+            <strong>Resumen:</strong> Seleccioná al menos un bolsón para ver el total.
+          </div>
+
+          <div class="actions-right">
+            <button id="confirmar" class="whatsapp" type="submit" aria-label="Confirmar pedido por WhatsApp">
+              Confirmar pedido
+            </button>
+          </div>
+        </div>
+
+        <div id="formStatus" class="sr-only" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <!-- Modal de selección de productos con cantidades -->
+    <dialog id="productPicker" class="modal" aria-labelledby="pickerTitle">
+      <form method="dialog" class="modal-body" id="pickerForm">
+        <h3 id="pickerTitle" class="modal-title">Elegí tus productos</h3>
+        <p class="modal-sub">Ajustá cantidades con “– / +”. Abajo ves el total.</p>
+
+        <div id="pickerList" class="picker-list" role="group" aria-label="Lista de productos">
+          <!-- filas generadas por JS -->
+        </div>
+
+        <div class="picker-summary">
+          <span>Total seleccionado:</span>
+          <strong id="pickerTotal">$0</strong>
+        </div>
+
+        <div class="modal-actions">
+          <button value="cancel" class="btn mini alt" type="button" id="pickerCancel">Cancelar</button>
+          <button value="confirm" class="btn mini" id="pickerConfirm">Confirmar selección</button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- FOOTER -->
+    <footer id="contacto" class="footer">
+      <p class="footer-credits">Página creada por <strong>Gonzalo Gewerc</strong></p>
+      <ul class="footer-list">
+        <li><a href="https://wa.me/543515208891" target="_blank" rel="noopener">+54 351 520-8891</a></li>
+        <li><a href="mailto:gongewerc@gmail.com">gongewerc@gmail.com</a></li>
+        <li><a href="https://instagram.com/gon.gewerc1" target="_blank" rel="noopener">@gon.gewerc1</a></li>
+      </ul>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">Completá los campos requeridos.</div>
+
+  <!-- Bump de versión para evitar caché del navegador -->
+  <script src="verduras.js?v=9"></script>
+</body>
+</html>
